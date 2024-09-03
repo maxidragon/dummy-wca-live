@@ -26,6 +26,5 @@ RUN apt update && apt install -y \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/dummy-wca-live /app/dummy-wca-live
-COPY --from=builder /app/data /app/data
 
 ENTRYPOINT ["/app/dummy-wca-live"]
