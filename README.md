@@ -77,7 +77,7 @@ docker run -p 4000:4000 maxidragon/dummy-wca-live
 If you have dev docker compose file you can add the following service:
 
 ```yaml
-dummy_wca:
+dummy_wca_live:
   container_name: dummy-wca-live
   restart: unless-stopped
   image: maxidragon/dummy-wca-live:latest
