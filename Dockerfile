@@ -12,7 +12,7 @@ COPY ./Cargo.lock .
 RUN mkdir -p ./src
 RUN echo "fn main() {println!(\"if you see this, the build broke\")}" > ./src/main.rs
 RUN cargo build --release
-RUN rm -f target/release/deps/$(cat Cargo.toml | awk '/name/ {print}' | cut -d '"' -f 2 | sed 's/-/_/')*
+RUN rm -f target/release/deps/$(cat Cargo.toml | awk '/name/ {print}' | cut -d '"' -f 2 | sed 's/-/_/g')*
 
 COPY . .
 RUN cargo build --release

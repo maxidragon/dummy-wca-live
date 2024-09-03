@@ -1,7 +1,7 @@
 version: "3.3"
 
 services:
-  dummy_wca:
+  dummy_wca_live:
     image: maxidragon/dummy-wca-live:latest
     container_name: dummy-wca-live
     network_mode: host
