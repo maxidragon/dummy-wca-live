@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dummy WCA Live</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <h1>Dummy WCA Live</h1>
+    <div style="display: none" id="results-inbox">{{ results }}</div>
+    <div id="results-container"></div>
+    <script>
+      let results = [];
+      document.addEventListener("DOMContentLoaded", function () {
+        const resultsInbox = document.getElementById("results-inbox");
+        results = JSON.parse(resultsInbox.innerHTML);
+        const resultsContainer = document.getElementById("results-container");
+        addJsonToTables(results);
+      });
+
+      function addJsonToTables(jsonData) {
+        const resultsContainer = document.getElementById("results-container");
+        resultsContainer.innerHTML = "";
+
+        for (const eventId in jsonData) {
+          for (const round in jsonData[eventId]) {
+            const participants = jsonData[eventId][0];
+
+            const roundHeading = document.createElement("h3");
+            roundHeading.textContent = `Round: ${eventId}`;
+            resultsContainer.appendChild(roundHeading);
+
+            const table = document.createElement("table");
+            table.border = "1"; 
+            table.style.marginBottom = "20px"; 
+            table.style.width = "100%"; 
+
+            const headerRow = document.createElement("tr");
+
+            const idHeader = document.createElement("th");
+            idHeader.textContent = "Registrant ID";
+            headerRow.appendChild(idHeader);
+
+            for (let i = 1; i <= 5; i++) {
+              const resultHeader = document.createElement("th");
+              resultHeader.textContent = i.toString();
+              headerRow.appendChild(resultHeader);
+            }
+            table.appendChild(headerRow);
+
+            participants.forEach((participant) => {
+              const row = document.createElement("tr");
+
+              const idCell = document.createElement("td");
+              idCell.textContent = participant.registrantId;
+              row.appendChild(idCell);
+
+              participant.attempts.forEach((attempt) => {
+                const resultCell = document.createElement("td");
+                resultCell.textContent = attempt.result;
+                row.appendChild(resultCell);
+              });
+
+              for (let i = participant.attempts.length; i < 5; i++) {
+                const emptyCell = document.createElement("td");
+                emptyCell.textContent = "-";
+                row.appendChild(emptyCell);
+              }
+              table.appendChild(row);
+            });
+            resultsContainer.appendChild(table);
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

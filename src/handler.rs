@@ -1,8 +1,9 @@
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use axum_extra::{headers::{self, authorization::Bearer}, TypedHeader};
 use serde_json::json;
+use std::collections::HashMap;
 
-use crate::schema::{EnterAttemptOptions, EnterResultsOptions};
+use crate::{schema::{EnterAttemptOptions, EnterResultsOptions}, AppState};
 
 pub async fn enter_attempt_handler(
     bearer_token: TypedHeader<headers::Authorization<Bearer>>,
@@ -21,6 +22,7 @@ pub async fn enter_attempt_handler(
 }
 
 pub async fn enter_results_handler(
+    State(state): State<AppState>,
     bearer_token: TypedHeader<headers::Authorization<Bearer>>,
     Json(body): Json<EnterResultsOptions>
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
@@ -31,7 +33,19 @@ pub async fn enter_results_handler(
             Json(json!({"status": "error","message": "Unauthorized"})),
         ))
     }
-    println!("Entering results for competition {}, event {}, round {}, results {:?}",
-        body.competition_wca_id, body.event_id, body.round_number, body.results);
+
+    let event_round_key = format!("{}-r{}", body.event_id, body.round_number);
+
+    let mut results = state.results.lock().unwrap();
+
+    results
+        .entry(event_round_key)
+        .or_insert_with(HashMap::new)
+        .insert(
+            body.competition_wca_id.parse().unwrap_or_default(),
+            body.results,
+        );
+
+    println!("Results entered for competition results {:?}", results); 
     return Ok(Json(json!({"message": "Results entered"})));
-}
+    }

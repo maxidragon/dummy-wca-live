@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -17,18 +17,18 @@ pub struct EnterResultsOptions {
     pub competition_wca_id: String,
     pub event_id: String,
     pub round_number: i32,
-    pub results: Vec<Result>,
+    pub results: Vec<ResultStruct>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(dead_code)]
 #[serde(rename_all = "camelCase")]
-pub struct Result {
+pub struct ResultStruct {
     pub registrant_id: i32,
     pub attempts: Vec<Attempt>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[allow(dead_code)]
 #[serde(rename_all = "camelCase")]
 pub struct Attempt {
